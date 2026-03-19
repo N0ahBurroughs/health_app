@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleDisplayName</key>
+    <string>HealthApp</string>
+    <key>NSHealthShareUsageDescription</key>
+    <string>This app reads your heart rate, HRV, sleep, resting heart rate, and workouts to sync health data.</string>
+    <key>NSHealthUpdateUsageDescription</key>
+    <string>This app does not write health data, but this key is required by HealthKit.</string>
+</dict>
+</plist>
