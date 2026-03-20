@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin - Users</title>
+    <style>
+      body {
+        font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+        background: #f8fafc;
+        margin: 0;
+        padding: 24px;
+        color: #0f172a;
+      }
+      h1 {
+        margin-bottom: 16px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      }
+      th, td {
+        text-align: left;
+        padding: 12px 16px;
+        border-bottom: 1px solid #e2e8f0;
+      }
+      th {
+        background: #e2e8f0;
+      }
+      form button {
+        background: #ef4444;
+        border: none;
+        color: white;
+        padding: 6px 10px;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      a {
+        color: #2563eb;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>User Admin</h1>
+    <p><a href="/dashboard">Back to dashboard</a></p>
+
+    <h2>Create User</h2>
+    <form method="post" action="/admin/create-user" style="margin-bottom: 20px;">
+      <label>Username</label><br />
+      <input name="username" required minlength="3" maxlength="50" /><br />
+      <label>Password</label><br />
+      <input name="password" type="password" required minlength="6" maxlength="72" /><br />
+      <button type="submit" style="margin-top: 8px;">Create</button>
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Created</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+        <tr>
+          <td>{{ user.username }}</td>
+          <td>{{ user.created_at }}</td>
+          <td>
+            <form method="post" action="/admin/reset-password/{{ user.username }}" style="margin-bottom: 6px;">
+              <input name="new_password" type="password" placeholder="New password" required minlength="6" maxlength="72" />
+              <button type="submit">Reset</button>
+            </form>
+            <form method="post" action="/admin/delete/{{ user.username }}">
+              <button type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>

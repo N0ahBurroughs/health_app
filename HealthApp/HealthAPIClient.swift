@@ -11,10 +11,12 @@ final class HealthAPIClient {
     private let baseURL: URL
     private let session: URLSession
     private let encoder: JSONEncoder
+    private let authService: AuthService?
 
-    init(baseURL: URL, session: URLSession = .shared) {
+    init(baseURL: URL, session: URLSession = .shared, authService: AuthService? = nil) {
         self.baseURL = baseURL
         self.session = session
+        self.authService = authService
         self.encoder = JSONEncoder()
         self.encoder.dateEncodingStrategy = .iso8601
     }
@@ -72,6 +74,45 @@ final class HealthAPIClient {
         request.httpBody = body
 
         performRequest(request, retriesRemaining: maxRetries, completion: completion)
+    }
+
+    func sendHealthDataAuthenticated(_ healthData: HealthData,
+                                     timestamp: Date = Date(),
+                                     maxRetries: Int = 2,
+                                     completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let authService = authService else {
+            completion(.failure(APIError.invalidResponse))
+            return
+        }
+
+        authService.withValidAccessToken { result in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+            case .success(let token):
+                let formatter = ISO8601DateFormatter()
+                let bodyDict: [String: Any] = [
+                    "timestamp": formatter.string(from: timestamp),
+                    "heart_rate": healthData.heartRate,
+                    "hrv": healthData.hrv,
+                    "sleep_hours": healthData.sleepHours,
+                    "resting_heart_rate": healthData.restingHeartRate
+                ]
+
+                guard let body = try? JSONSerialization.data(withJSONObject: bodyDict, options: []) else {
+                    completion(.failure(APIError.encodingFailed))
+                    return
+                }
+
+                var request = URLRequest(url: self.baseURL.appendingPathComponent("api/health-data"))
+                request.httpMethod = "POST"
+                request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+                request.httpBody = body
+
+                self.performRequest(request, retriesRemaining: maxRetries, completion: completion)
+            }
+        }
     }
 
     private func performRequest(_ request: URLRequest,

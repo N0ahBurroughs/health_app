@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Health Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      body {
+        font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+        margin: 0;
+        background: #0f172a;
+        color: #e2e8f0;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 32px;
+        background: #111827;
+      }
+      header h1 {
+        margin: 0;
+        font-size: 20px;
+      }
+      header form button {
+        background: #ef4444;
+        border: none;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      main {
+        padding: 28px 32px 60px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 20px;
+      }
+      .card {
+        background: #1e293b;
+        border-radius: 12px;
+        padding: 16px;
+      }
+      .card h2 {
+        margin: 0 0 8px 0;
+        font-size: 16px;
+      }
+      .summary {
+        font-size: 14px;
+        color: #cbd5f5;
+      }
+      .actions {
+        margin-top: 20px;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      button.action {
+        background: #38bdf8;
+        border: none;
+        padding: 10px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        color: #0f172a;
+        font-weight: 600;
+      }
+      .pill {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 12px;
+        background: #334155;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Welcome, {{ username }}</h1>
+      <div>
+        {% if is_admin %}
+        <a href="/admin" style="color: #38bdf8; margin-right: 16px;">Admin</a>
+        {% endif %}
+        <form method="post" action="/logout" style="display: inline;">
+          <button type="submit">Log out</button>
+        </form>
+      </div>
+    </header>
+
+    <main>
+      <div class="grid">
+        <div class="card">
+          <h2>Latest Metrics</h2>
+          <div id="latest" class="summary">Loading...</div>
+        </div>
+        <div class="card">
+          <h2>Recovery</h2>
+          <div id="recovery" class="summary">Loading...</div>
+        </div>
+        <div class="card">
+          <h2>AI Summary</h2>
+          <div id="ai-summary" class="summary">Run analysis to see insights.</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="action" id="refresh">Refresh Summary</button>
+        <button class="action" id="analyze">Run AI Analysis</button>
+      </div>
+
+      <div class="grid" style="margin-top: 24px;">
+        <div class="card">
+          <h2>Heart Rate</h2>
+          <canvas id="chart-heart"></canvas>
+        </div>
+        <div class="card">
+          <h2>HRV</h2>
+          <canvas id="chart-hrv"></canvas>
+        </div>
+        <div class="card">
+          <h2>Sleep (hrs)</h2>
+          <canvas id="chart-sleep"></canvas>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      const charts = {};
+
+      function createLineChart(ctx, label, data) {
+        return new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: data.map((_, idx) => `Day ${idx + 1}`),
+            datasets: [{
+              label,
+              data,
+              borderColor: '#38bdf8',
+              backgroundColor: 'rgba(56,189,248,0.2)',
+              fill: true,
+              tension: 0.3,
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: { x: { ticks: { color: '#94a3b8' } }, y: { ticks: { color: '#94a3b8' } } }
+          }
+        });
+      }
+
+      async function loadSummary() {
+        const res = await fetch('/api/health-summary');
+        if (!res.ok) {
+          document.getElementById('latest').textContent = 'No data yet.';
+          return;
+        }
+        const data = await res.json();
+        document.getElementById('latest').innerHTML = `
+          HR: <strong>${data.heart_rate}</strong> bpm<br />
+          HRV: <strong>${data.hrv}</strong> ms<br />
+          Sleep: <strong>${data.sleep_hours}</strong> hrs<br />
+          Resting HR: <strong>${data.resting_heart_rate}</strong> bpm
+        `;
+        document.getElementById('recovery').innerHTML = `
+          Score: <strong>${data.recovery_score}</strong>
+        `;
+      }
+
+      async function loadTrends() {
+        const res = await fetch('/api/health-trends');
+        if (!res.ok) {
+          return;
+        }
+        const data = await res.json();
+        const hrCtx = document.getElementById('chart-heart');
+        const hrvCtx = document.getElementById('chart-hrv');
+        const sleepCtx = document.getElementById('chart-sleep');
+
+        charts.hr?.destroy();
+        charts.hrv?.destroy();
+        charts.sleep?.destroy();
+
+        charts.hr = createLineChart(hrCtx, 'Heart Rate', data.heart_rate);
+        charts.hrv = createLineChart(hrvCtx, 'HRV', data.hrv);
+        charts.sleep = createLineChart(sleepCtx, 'Sleep Hours', data.sleep_hours);
+      }
+
+      async function runAnalysis(force) {
+        const res = await fetch(`/api/health-insights?force=${force ? 'true' : 'false'}`);
+        if (!res.ok) {
+          document.getElementById('ai-summary').textContent = 'Unable to load AI summary.';
+          return;
+        }
+        const data = await res.json();
+        document.getElementById('ai-summary').innerHTML = `
+          <div><strong>${data.summary}</strong></div>
+          <div style="margin-top: 8px;"><span class="pill">${data.recovery_status}</span></div>
+          <div style="margin-top: 10px;">Workout: ${data.workout_intensity_suggestion}</div>
+          <ul style="margin-top: 10px; padding-left: 18px;">
+            ${data.recommendations.map(r => `<li>${r}</li>`).join('')}
+          </ul>
+        `;
+      }
+
+      document.getElementById('refresh').addEventListener('click', () => {
+        loadSummary();
+        loadTrends();
+      });
+
+      document.getElementById('analyze').addEventListener('click', () => runAnalysis(true));
+
+      loadSummary();
+      loadTrends();
+    </script>
+  </body>
+</html>

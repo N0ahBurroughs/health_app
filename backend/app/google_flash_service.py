@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass
+import json
 from typing import Any, Dict, List
 
 import requests
@@ -41,8 +42,12 @@ class GoogleFlashClient:
         if not self.api_key:
             raise ValueError("Missing GOOGLE_FLASH_API_KEY env var")
 
-        # Replace with the actual Google Flash endpoint your project uses.
-        self.base_url = base_url or os.getenv("GOOGLE_FLASH_BASE_URL") or "https://api.google.com/flash/v1/generate"
+        # Default to Gemini Flash endpoint; can be overridden by env or init.
+        self.base_url = (
+            base_url
+            or os.getenv("GOOGLE_FLASH_BASE_URL")
+            or "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent"
+        )
 
     def generate_health_summary(
         self,
@@ -51,14 +56,22 @@ class GoogleFlashClient:
         baselines: Baselines,
     ) -> FlashOutput:
         payload = {
-            "model": "flash",
-            "temperature": 0.2,
-            "response_format": {"type": "json_object"},
-            "input": _build_prompt(metrics, recovery, baselines),
+            "contents": [
+                {
+                    "parts": [
+                        {
+                            "text": _build_prompt(metrics, recovery, baselines)
+                        }
+                    ]
+                }
+            ],
+            "generationConfig": {
+                "temperature": 0.2
+            }
         }
 
         headers = {
-            "Authorization": f"Bearer {self.api_key}",
+            "X-goog-api-key": self.api_key,
             "Content-Type": "application/json",
         }
 
@@ -87,9 +100,31 @@ def _build_prompt(metrics: HealthMetrics, recovery: Recovery, baselines: Baselin
 
 
 def _parse_output(data: Dict[str, Any]) -> FlashOutput:
-    summary = data.get("summary", "")
-    recommendations = data.get("recommendations", [])
-    workout = data.get("workout_intensity_suggestion", "")
+    # Gemini responses are wrapped in candidates/parts.
+    text = ""
+    try:
+        candidates = data.get("candidates", [])
+        if candidates:
+            parts = candidates[0].get("content", {}).get("parts", [])
+            if parts:
+                text = parts[0].get("text", "")
+    except Exception:
+        text = ""
+
+    # Expect the model to return JSON; fall back to empty structure on failure.
+    summary = ""
+    recommendations: List[str] = []
+    workout = ""
+    if text:
+        try:
+            parsed = json.loads(text)
+            summary = str(parsed.get("summary", ""))
+            recommendations = parsed.get("recommendations", [])
+            workout = str(parsed.get("workout_intensity_suggestion", ""))
+        except Exception:
+            summary = ""
+            recommendations = []
+            workout = ""
 
     if not isinstance(recommendations, list):
         recommendations = [str(recommendations)]

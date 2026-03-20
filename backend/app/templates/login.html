@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Health App Login</title>
+    <style>
+      body {
+        font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+        background: #f3f4f6;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 420px;
+        margin: 80px auto;
+        background: #fff;
+        padding: 32px;
+        border-radius: 12px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      }
+      h1 {
+        font-size: 24px;
+        margin: 0 0 16px 0;
+      }
+      label {
+        display: block;
+        margin-top: 12px;
+        font-weight: 600;
+      }
+      input {
+        width: 100%;
+        padding: 10px 12px;
+        margin-top: 6px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+      }
+      button {
+        width: 100%;
+        margin-top: 18px;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        background: #111827;
+        color: #fff;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .error {
+        margin-top: 12px;
+        color: #b91c1c;
+      }
+      .switch {
+        margin-top: 16px;
+        text-align: center;
+      }
+      .switch a {
+        color: #2563eb;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>{{ title }}</h1>
+      <form method="post" action="{{ action }}">
+        <label for="username">Username</label>
+        <input id="username" name="username" required minlength="3" maxlength="50" />
+
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" required minlength="6" maxlength="72" />
+
+        <button type="submit">{{ button_label }}</button>
+      </form>
+
+      {% if error %}
+      <div class="error">{{ error }}</div>
+      {% endif %}
+
+      <div class="switch">
+        {% if switch_url %}
+        <a href="{{ switch_url }}">{{ switch_label }}</a>
+        {% endif %}
+      </div>
+    </div>
+  </body>
+</html>

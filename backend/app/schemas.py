@@ -18,6 +18,14 @@ class HealthMetricsPayload(BaseModel):
     resting_heart_rate: float
 
 
+class HealthMetricsWebIn(BaseModel):
+    timestamp: datetime
+    heart_rate: float
+    hrv: float
+    sleep_hours: float
+    resting_heart_rate: float
+
+
 class BaselinesPayload(BaseModel):
     hrv_baseline: float
     sleep_baseline: float
@@ -70,3 +78,32 @@ class HealthInsightsCreate(BaseModel):
     recovery_score: float
     recovery_status: str
     deltas: dict
+
+
+class UserCreate(BaseModel):
+    username: str = Field(..., min_length=3, max_length=50)
+    password: str = Field(..., min_length=6, max_length=72)
+
+
+class UserOut(BaseModel):
+    id: int
+    username: str
+
+    class Config:
+        from_attributes = True
+
+
+class TokenRequest(BaseModel):
+    username: str
+    password: str
+
+
+class TokenResponse(BaseModel):
+    access_token: str
+    refresh_token: str
+    expires_in: int
+    token_type: str = "bearer"
+
+
+class RefreshTokenRequest(BaseModel):
+    refresh_token: str
