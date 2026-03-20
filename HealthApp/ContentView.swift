@@ -1,53 +1,63 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var healthKitManager = HealthKitManager()
+    @StateObject private var viewModel = HealthViewModel()
 
     var body: some View {
-        VStack(spacing: 16) {
-            Text("HealthKit Sync")
-                .font(.title)
-                .fontWeight(.semibold)
+        NavigationView {
+            VStack(spacing: 16) {
+                if viewModel.isLoggedIn {
+                    loggedInView
+                } else {
+                    loginView
+                }
+            }
+            .padding()
+            .navigationTitle("Health Sync")
+        }
+    }
 
-            statusText
-                .multilineTextAlignment(.center)
-                .foregroundColor(.secondary)
+    private var loginView: some View {
+        VStack(spacing: 12) {
+            TextField("Username", text: $viewModel.username)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .textFieldStyle(.roundedBorder)
 
-            Button(action: {
-                healthKitManager.requestAuthorization()
-            }) {
-                Text("Sync Health Data")
-                    .fontWeight(.semibold)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 12)
+            SecureField("Password", text: $viewModel.password)
+                .textFieldStyle(.roundedBorder)
+
+            Button("Log In") {
+                viewModel.login()
             }
             .buttonStyle(.borderedProminent)
-            .disabled(isRequesting)
+            .disabled(viewModel.isBusy)
 
-            Spacer()
+            Text(viewModel.statusMessage)
+                .font(.footnote)
+                .foregroundColor(.secondary)
         }
-        .padding()
     }
 
-    private var isRequesting: Bool {
-        if case .requesting = healthKitManager.authorizationState {
-            return true
-        }
-        return false
-    }
+    private var loggedInView: some View {
+        VStack(spacing: 12) {
+            Text("Signed in as \(viewModel.username)")
+                .font(.headline)
 
-    private var statusText: Text {
-        switch healthKitManager.authorizationState {
-        case .idle:
-            return Text("Tap the button to request HealthKit access.")
-        case .notAvailable:
-            return Text("Health data is not available on this device.")
-        case .requesting:
-            return Text("Requesting permission…")
-        case .authorized:
-            return Text("Access granted. You can now read health data.")
-        case .denied(let message):
-            return Text("Access denied. \(message)")
+            Button("Request Health Access") {
+                viewModel.requestHealthAccess()
+            }
+            .buttonStyle(.bordered)
+
+            Button("Sync Health Data") {
+                viewModel.syncHealthData()
+            }
+            .buttonStyle(.borderedProminent)
+            .disabled(viewModel.isBusy)
+
+            Text(viewModel.statusMessage)
+                .font(.footnote)
+                .foregroundColor(.secondary)
         }
     }
 }

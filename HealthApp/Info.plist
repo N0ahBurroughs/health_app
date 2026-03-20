@@ -8,5 +8,12 @@
     <string>This app reads your heart rate, HRV, sleep, resting heart rate, and workouts to sync health data.</string>
     <key>NSHealthUpdateUsageDescription</key>
     <string>This app does not write health data, but this key is required by HealthKit.</string>
+    <key>API_BASE_URL</key>
+    <string>http://127.0.0.1:8000</string>
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+    </dict>
 </dict>
 </plist>

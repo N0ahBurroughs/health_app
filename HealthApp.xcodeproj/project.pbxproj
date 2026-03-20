@@ -1,0 +1,225 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A1B2C3D40100000100000001 /* HealthAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40100000100000010 /* HealthAppApp.swift */; };
+		A1B2C3D40100000100000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40100000100000011 /* ContentView.swift */; };
+		A1B2C3D40100000100000003 /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40100000100000012 /* HealthKitManager.swift */; };
+		A1B2C3D40100000100000004 /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40100000100000013 /* HealthKitService.swift */; };
+		A1B2C3D40100000100000005 /* HealthAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40100000100000014 /* HealthAPIClient.swift */; };
+		A1B2C3D40100000100000006 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40100000100000015 /* AuthService.swift */; };
+		A1B2C3D40100000100000007 /* HealthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40100000100000016 /* HealthViewModel.swift */; };
+		A1B2C3D40100000100000008 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40100000100000017 /* AppConfig.swift */; };
+		A1B2C3D40100000100000009 /* DevConfig.plist in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40100000100000018 /* DevConfig.plist */; };
+		A1B2C3D4010000010000000A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4010000010000001B /* Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		A1B2C3D40100000100000010 /* HealthAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthAppApp.swift; sourceTree = "<group>"; };
+		A1B2C3D40100000100000011 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A1B2C3D40100000100000012 /* HealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitManager.swift; sourceTree = "<group>"; };
+		A1B2C3D40100000100000013 /* HealthKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitService.swift; sourceTree = "<group>"; };
+		A1B2C3D40100000100000014 /* HealthAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthAPIClient.swift; sourceTree = "<group>"; };
+		A1B2C3D40100000100000015 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		A1B2C3D40100000100000016 /* HealthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthViewModel.swift; sourceTree = "<group>"; };
+		A1B2C3D40100000100000017 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
+		A1B2C3D40100000100000018 /* DevConfig.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = DevConfig.plist; sourceTree = "<group>"; };
+		A1B2C3D40100000100000019 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		A1B2C3D4010000010000001A /* HealthApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HealthApp.entitlements; sourceTree = "<group>"; };
+		A1B2C3D4010000010000001B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		A1B2C3D40100000100000020 /* HealthApp */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D40100000100000010 /* HealthAppApp.swift */,
+				A1B2C3D40100000100000011 /* ContentView.swift */,
+				A1B2C3D40100000100000012 /* HealthKitManager.swift */,
+				A1B2C3D40100000100000013 /* HealthKitService.swift */,
+				A1B2C3D40100000100000014 /* HealthAPIClient.swift */,
+				A1B2C3D40100000100000015 /* AuthService.swift */,
+				A1B2C3D40100000100000016 /* HealthViewModel.swift */,
+				A1B2C3D40100000100000017 /* AppConfig.swift */,
+				A1B2C3D4010000010000001B /* Assets.xcassets */,
+				A1B2C3D40100000100000018 /* DevConfig.plist */,
+				A1B2C3D40100000100000019 /* Info.plist */,
+				A1B2C3D4010000010000001A /* HealthApp.entitlements */,
+			);
+			path = HealthApp;
+			sourceTree = "<group>";
+		};
+		A1B2C3D40100000100000021 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D40100000100000030 /* HealthApp.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A1B2C3D40100000100000022 /* Root */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D40100000100000020 /* HealthApp */,
+				A1B2C3D40100000100000021 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A1B2C3D40100000100000040 /* HealthApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1B2C3D40100000100000060 /* Build configuration list for PBXNativeTarget "HealthApp" */;
+			buildPhases = (
+				A1B2C3D40100000100000041 /* Sources */,
+				A1B2C3D40100000100000042 /* Resources */,
+				A1B2C3D40100000100000043 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = HealthApp;
+			productName = HealthApp;
+			productReference = A1B2C3D40100000100000030 /* HealthApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A1B2C3D40100000100000050 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1510;
+				TargetAttributes = {
+					A1B2C3D40100000100000040 = {
+						CreatedOnToolsVersion = 15.1;
+					};
+				};
+			};
+			buildConfigurationList = A1B2C3D40100000100000070 /* Build configuration list for PBXProject "HealthApp" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = A1B2C3D40100000100000022 /* Root */;
+			productRefGroup = A1B2C3D40100000100000021 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A1B2C3D40100000100000040 /* HealthApp */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A1B2C3D40100000100000042 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1B2C3D4010000010000000A /* Assets.xcassets in Resources */,
+				A1B2C3D40100000100000009 /* DevConfig.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A1B2C3D40100000100000041 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1B2C3D40100000100000001 /* HealthAppApp.swift in Sources */,
+				A1B2C3D40100000100000002 /* ContentView.swift in Sources */,
+				A1B2C3D40100000100000003 /* HealthKitManager.swift in Sources */,
+				A1B2C3D40100000100000004 /* HealthKitService.swift in Sources */,
+				A1B2C3D40100000100000005 /* HealthAPIClient.swift in Sources */,
+				A1B2C3D40100000100000006 /* AuthService.swift in Sources */,
+				A1B2C3D40100000100000007 /* HealthViewModel.swift in Sources */,
+				A1B2C3D40100000100000008 /* AppConfig.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A1B2C3D40100000100000043 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXFileReference section (Products) */
+		A1B2C3D40100000100000030 /* HealthApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; path = HealthApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section (Products) */
+
+/* Begin XCBuildConfiguration section */
+		A1B2C3D40100000100000080 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = HealthApp/HealthApp.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = HealthApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.HealthApp;
+				PRODUCT_NAME = HealthApp;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1";
+			};
+			name = Debug;
+		};
+		A1B2C3D40100000100000081 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = HealthApp/HealthApp.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = HealthApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.HealthApp;
+				PRODUCT_NAME = HealthApp;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A1B2C3D40100000100000070 /* Build configuration list for PBXProject "HealthApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1B2C3D40100000100000080 /* Debug */,
+				A1B2C3D40100000100000081 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A1B2C3D40100000100000060 /* Build configuration list for PBXNativeTarget "HealthApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1B2C3D40100000100000080 /* Debug */,
+				A1B2C3D40100000100000081 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+	};
+	rootObject = A1B2C3D40100000100000050 /* Project object */;
+}

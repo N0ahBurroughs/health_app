@@ -17,7 +17,8 @@
 7. Install dependencies:
    - `pip install -r requirements.txt`
 8. Run the server:
-   - `uvicorn app.main:app --reload`
+   - `./run.sh` (creates `.env` if missing and starts uvicorn)
+   - Or: `uvicorn app.main:app --reload`
 
 ## Endpoints
 - `POST /health-data`
