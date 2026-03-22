@@ -74,6 +74,49 @@
         font-size: 12px;
         background: #334155;
       }
+      .panel {
+        margin-top: 28px;
+        background: #0b1220;
+        border: 1px solid #1f2a44;
+        border-radius: 12px;
+        padding: 16px;
+      }
+      .panel h3 {
+        margin: 0 0 12px 0;
+        font-size: 15px;
+      }
+      .panel label {
+        display: block;
+        font-size: 12px;
+        color: #94a3b8;
+        margin-top: 8px;
+      }
+      .panel input,
+      .panel select,
+      .panel textarea {
+        width: 100%;
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid #334155;
+        background: #0f172a;
+        color: #e2e8f0;
+      }
+      .panel textarea {
+        min-height: 110px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      }
+      .panel .row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 12px;
+      }
+      .panel pre {
+        background: #0f172a;
+        padding: 10px;
+        border-radius: 8px;
+        white-space: pre-wrap;
+        font-size: 12px;
+      }
     </style>
   </head>
   <body>
@@ -123,6 +166,39 @@
           <h2>Sleep (hrs)</h2>
           <canvas id="chart-sleep"></canvas>
         </div>
+      </div>
+
+      <div class="grid" style="margin-top: 28px;">
+        <div class="card">
+          <h2>Daily Check</h2>
+          <div id="daily-check" class="summary">Loading daily check...</div>
+          <div class="actions">
+            <button class="action" id="refresh-daily">Regenerate</button>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Anomaly Detector</h2>
+          <div id="anomaly-check" class="summary">Loading anomaly detector...</div>
+          <div class="actions">
+            <button class="action" id="refresh-anomaly">Regenerate</button>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Training Recommendation</h2>
+          <div id="training-check" class="summary">Loading training recommendation...</div>
+          <div class="actions">
+            <button class="action" id="refresh-training">Regenerate</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Tool Insights (MCP)</h3>
+        <div class="actions">
+          <button class="action" id="tool-metrics">Load Recent Metrics</button>
+          <button class="action" id="tool-memory">Search Memory</button>
+        </div>
+        <pre id="mcp-output">Run a tool to see output.</pre>
       </div>
     </main>
 
@@ -214,6 +290,42 @@
 
       loadSummary();
       loadTrends();
+
+      async function loadFeature(endpoint, targetId) {
+        const res = await fetch(endpoint);
+        if (!res.ok) {
+          document.getElementById(targetId).textContent = 'Unable to load.';
+          return;
+        }
+        const data = await res.json();
+        const summary = data.final?.summary || 'No summary available.';
+        const recs = (data.final?.recommendations || []).map(r => `<li>${r}</li>`).join('');
+        document.getElementById(targetId).innerHTML = `
+          <div><strong>${summary}</strong></div>
+          ${recs ? `<ul style="margin-top: 10px; padding-left: 18px;">${recs}</ul>` : ''}
+        `;
+      }
+
+      async function runMcpTool(tool, args) {
+        const res = await fetch('/mcp/tool/call', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tool, arguments: args })
+        });
+        const data = await res.json();
+        document.getElementById('mcp-output').textContent = JSON.stringify(data, null, 2);
+      }
+
+      document.getElementById('refresh-daily').addEventListener('click', () => loadFeature('/api/features/daily-check', 'daily-check'));
+      document.getElementById('refresh-anomaly').addEventListener('click', () => loadFeature('/api/features/anomaly-alert', 'anomaly-check'));
+      document.getElementById('refresh-training').addEventListener('click', () => loadFeature('/api/features/training-reco', 'training-check'));
+
+      document.getElementById('tool-metrics').addEventListener('click', () => runMcpTool('get_recent_metrics', { user_id: '{{ username }}', days: 7 }));
+      document.getElementById('tool-memory').addEventListener('click', () => runMcpTool('search_memory', { user_id: '{{ username }}', query: 'summary', top_k: 5 }));
+
+      loadFeature('/api/features/daily-check', 'daily-check');
+      loadFeature('/api/features/anomaly-alert', 'anomaly-check');
+      loadFeature('/api/features/training-reco', 'training-check');
     </script>
   </body>
 </html>

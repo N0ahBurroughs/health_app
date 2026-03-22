@@ -107,3 +107,47 @@ class TokenResponse(BaseModel):
 
 class RefreshTokenRequest(BaseModel):
     refresh_token: str
+
+
+class AgentInput(BaseModel):
+    user_id: str = Field(..., min_length=1)
+    timestamp: datetime
+    metrics: HealthMetricsPayload
+    baselines: BaselinesPayload | None = None
+    recent_insights: list[str] | None = None
+    goals: list[str] | None = None
+
+
+class AgentOutput(BaseModel):
+    summary: str
+    recommendations: list[str]
+    actions: list[str]
+    confidence: float = 0.0
+    citations: list[str] = []
+
+
+class AgentRunRequest(BaseModel):
+    task_type: str = Field(..., min_length=1)
+    input: AgentInput
+
+
+class AgentRunResponse(BaseModel):
+    task_type: str
+    outputs: dict[str, dict]
+    final: dict
+
+
+class WorkflowRequest(BaseModel):
+    user_id: str = Field(..., min_length=1)
+    timestamp: datetime
+    metrics: HealthMetricsPayload
+
+
+class MCPToolCallRequest(BaseModel):
+    tool: str = Field(..., min_length=1)
+    arguments: dict
+
+
+class MCPToolCallResponse(BaseModel):
+    tool: str
+    result: object

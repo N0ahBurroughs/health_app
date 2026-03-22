@@ -2,13 +2,17 @@ from datetime import datetime, timezone
 import os
 
 from fastapi import Depends, FastAPI, HTTPException, Request, Form, status
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
 from sqlalchemy.orm import Session
 
 from . import crud, models, schemas
-from .db import Base, engine, get_db
+from .db import Base, engine, get_db, ensure_pgvector_extension
+from .mcp.router import router as mcp_router
+from .orchestration.routes import router as orchestration_router
+from .observability.routes import router as observability_router
 from .auth import hash_password, verify_password
 from .google_flash_service import Baselines, GoogleFlashClient, HealthMetrics, Recovery
 from .personalization import compute_baselines, compute_deltas
@@ -21,12 +25,24 @@ from .token_auth import (
     verify_access_token,
 )
 
+ensure_pgvector_extension()
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Health API")
 app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET", "dev-secret-change-me"))
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=os.getenv("CORS_ALLOW_ORIGINS", "http://localhost:5173").split(","),
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 templates = Jinja2Templates(directory="/Users/noahburroughs/Desktop/AI POC/health_app/backend/app/templates")
 ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "admin")
+
+app.include_router(mcp_router)
+app.include_router(orchestration_router)
+app.include_router(observability_router)
 
 
 @app.get("/", response_class=HTMLResponse)

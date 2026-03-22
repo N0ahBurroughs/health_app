@@ -1,4 +1,5 @@
 from sqlalchemy import Column, DateTime, Float, Integer, String, Index, func, JSON, UniqueConstraint, Boolean
+from pgvector.sqlalchemy import Vector
 from .db import Base
 
 
@@ -64,3 +65,48 @@ class RefreshToken(Base):
 
 
 Index("ix_refresh_tokens_user", RefreshToken.user_id)
+
+
+class MemoryChunk(Base):
+    __tablename__ = "memory_chunks"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(String, index=True, nullable=False)
+    memory_type = Column(String, index=True, nullable=False)
+    content = Column(String, nullable=False)
+    embedding = Column(Vector(8), nullable=False)
+    meta = Column(JSON, nullable=False, default=dict)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+
+Index("ix_memory_chunks_user_type", MemoryChunk.user_id, MemoryChunk.memory_type)
+
+
+class AgentRun(Base):
+    __tablename__ = "agent_runs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    run_id = Column(String, index=True, nullable=False)
+    user_id = Column(String, index=True, nullable=False)
+    agent_name = Column(String, index=True, nullable=False)
+    prompt = Column(String, nullable=False)
+    output = Column(JSON, nullable=False)
+    latency_ms = Column(Integer, nullable=False, default=0)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+
+Index("ix_agent_runs_user_agent", AgentRun.user_id, AgentRun.agent_name)
+
+
+class AgentEvent(Base):
+    __tablename__ = "agent_events"
+
+    id = Column(Integer, primary_key=True, index=True)
+    run_id = Column(String, index=True, nullable=False)
+    user_id = Column(String, index=True, nullable=False)
+    event_type = Column(String, index=True, nullable=False)
+    payload = Column(JSON, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+
+Index("ix_agent_events_user_type", AgentEvent.user_id, AgentEvent.event_type)
